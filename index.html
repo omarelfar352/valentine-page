@@ -14,6 +14,23 @@
     align-items: center;
     margin: 0;
   }
+
+.intro {
+  font-size: 1.5rem;       /* larger than subtext */
+  font-weight: bold;        /* bold text */
+  color: #FF2E51;           /* light pink */
+  font-family: "Dancing Script", "Segoe UI", cursive;  /* handwriting style */
+  margin-bottom: 0.5rem;
+}
+
+.subtext {
+  font-size: 1.2rem;        /* smaller than intro */
+  font-weight: bold;
+  color: #A3001B;              /* darker, readable */
+  font-family: "Segoe UI", sans-serif; 
+  margin-bottom: 1rem;
+}
+
   .card {
     background: white;
     padding: 2rem;
@@ -27,7 +44,7 @@
   }
   h1 { color: #e63946; margin-bottom: 1rem; }
   p { font-size: 1.1rem; margin-bottom: 1.5rem; }
-  #countdown { font-weight: bold; color: #444; margin-bottom: 1.8rem; }
+  #countdown { font-weight: bold; color: #A3001B; margin-bottom: 1.8rem; }
   button {
     font-size: 1rem;
     padding: 0.75rem 1.5rem;
@@ -79,8 +96,9 @@
 <audio id="bgMusic" loop></audio>
 
 <div class="card" id="card">
+  <p class="intro">I love you to the furthest galaxy and back...</p>
+  <p class="subtext">I have an important question for you mi pook…</p>
   <h1>💖 Will You Be My Valentine? 💖</h1>
-  <p>I love you to the furthest galaxy and back...<br><br>I have an important question for you mi pook…</p>
   <div id="countdown">Loading countdown…</div>
   <button class="yes" id="yesBtn">Yes 💕</button>
   <button class="no" id="noBtn">No 🙃</button>
@@ -218,5 +236,3 @@ window.onload = function() {
 
 </body>
 </html>
-
-

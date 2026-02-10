@@ -131,7 +131,7 @@ window.onload = function() {
 
   // --- YES BUTTON ---
   yesBtn.onclick = function() {
-    music.play().catch(() => music.play());
+    playRandomSong(); // play a random song on user interaction
     card.innerHTML = `
       <h1>🥰 YAY!!! 🥰</h1>
       <p>I knew it ❤️<br><br>Happy Valentine’s Day mi lil most precious most adorable most cutie patootie zanzuni patoonie princess 💐</p>
@@ -246,6 +246,7 @@ noBtn.onclick = () => {
 
 </body>
 </html>
+
 
 
 

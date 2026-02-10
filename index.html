@@ -140,9 +140,16 @@ window.onload = function() {
     document.getElementById("date2").onclick = () => showPhotos('Feb 14 at 2 PM');
   };
 
-  // --- NO BUTTON ---
-  noBtn.onmouseover = () => noBtn.textContent = "That’s not allowed 😠";
-  noBtn.onmouseout = () => noBtn.textContent = "No 🙃";
+// NO button behavior
+noBtn.onclick = () => {
+  noBtn.textContent = "That’s not nice POOK! 😠"; // change text immediately
+  noBtn.disabled = true; // optional: prevent double-tap
+  setTimeout(() => {
+    noBtn.textContent = "No 🙃"; // revert after 3 seconds
+    noBtn.disabled = false;
+  }, 3000); // 3000ms = 3 seconds
+};
+
 
   // --- COUNTDOWN ---
   const valentineDate = new Date("February 14, 2026 00:00:00").getTime();
@@ -236,4 +243,5 @@ window.onload = function() {
 
 </body>
 </html>
+
 

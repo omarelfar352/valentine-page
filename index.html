@@ -112,24 +112,23 @@ window.onload = function() {
   const countdownEl = document.getElementById("countdown");
   const music = document.getElementById("bgMusic");
 
-  // --- SONG LIST & RANDOM SELECTION ---
-  const music = document.getElementById("bgMusic");
+  // SONG LIST
   const songs = ["song1.mp3","song2.mp3","song3.mp3","song4.mp3","song5.mp3"];
-  function playRandomSong() {
-  const randomIndex = Math.floor(Math.random() * songs.length);
-  music.src = songs[randomIndex];
-  music.volume = 0;
-  music.play().catch(() => console.log("Autoplay blocked. Click 'Yes' to start music."));
-  
-  // Slow fade-in (~10 seconds)
-  let vol = 0;
-  const fadeIn = setInterval(() => {
-    if(vol < 1){ vol += 0.002; music.volume = Math.min(vol,1); }
-    else clearInterval(fadeIn);
-  }, 50);
-}
 
-  // --- YES BUTTON ---
+  function playRandomSong() {
+    const randomIndex = Math.floor(Math.random() * songs.length);
+    music.src = songs[randomIndex];
+    music.volume = 0;
+    music.play().catch(() => console.log("Autoplay blocked. Click 'Yes' to start music."));
+    // Slow fade-in (~10 seconds)
+    let vol = 0;
+    const fadeIn = setInterval(() => {
+      if(vol < 1){ vol += 0.002; music.volume = Math.min(vol,1); }
+      else clearInterval(fadeIn);
+    }, 50);
+  }
+
+  // YES button
   yesBtn.onclick = function() {
     playRandomSong(); // play a random song on user interaction
     card.innerHTML = `
@@ -246,6 +245,7 @@ noBtn.onclick = () => {
 
 </body>
 </html>
+
 
 
 

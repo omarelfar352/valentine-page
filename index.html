@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <title>I promise it is not a virus</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <style>
   body {
     font-family: "Segoe UI", sans-serif;
@@ -15,21 +16,20 @@
     margin: 0;
   }
 
-.intro {
-  font-size: 1.5rem;       /* larger than subtext */
-  font-weight: bold;        /* bold text */
-  color: #FF2E51;           /* light pink */
-  font-family: "Dancing Script", "Segoe UI", cursive;  /* handwriting style */
-  margin-bottom: 0.5rem;
-}
+  .intro {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FF2E51;
+    font-family: "Dancing Script", "Segoe UI", cursive;
+    margin-bottom: 0.5rem;
+  }
 
-.subtext {
-  font-size: 1.2rem;        /* smaller than intro */
-  font-weight: bold;
-  color: #A3001B;              /* darker, readable */
-  font-family: "Segoe UI", sans-serif; 
-  margin-bottom: 1rem;
-}
+  .subtext {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #A3001B;
+    margin-bottom: 1rem;
+  }
 
   .card {
     background: white;
@@ -39,12 +39,18 @@
     max-width: 500px;
     width: 90%;
     text-align: center;
-    position: relative;
     overflow: hidden;
   }
+
   h1 { color: #e63946; margin-bottom: 1rem; }
   p { font-size: 1.1rem; margin-bottom: 1.5rem; }
-  #countdown { font-weight: bold; color: #A3001B; margin-bottom: 1.8rem; }
+
+  #countdown {
+    font-weight: bold;
+    color: #A3001B;
+    margin-bottom: 1.8rem;
+  }
+
   button {
     font-size: 1rem;
     padding: 0.75rem 1.5rem;
@@ -54,28 +60,40 @@
     margin: 0.5rem;
     transition: transform 0.2s;
   }
+
   button:hover { transform: scale(1.05); }
+
   .yes { background-color: #e63946; color: white; }
   .no { background-color: #ccc; color: #333; }
+
   .date-option {
-    display: block;
-    margin: 0.5rem auto;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    border: none;
     background-color: #ff6b6b;
     color: white;
-    cursor: pointer;
-    width: fit-content;
   }
-  .date-option:hover { background-color: #e63946; }
 
-  /* Swipeable photo stack */
+  .date-option:hover {
+    background-color: #e63946;
+  }
+
+  /* Equal-size song buttons */
+  .song-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .song-controls button {
+    flex: 1;
+    max-width: 160px;
+  }
+
   .photo-stack {
     position: relative;
     height: 400px;
     margin-top: 1rem;
   }
+
   .photo-stack img {
     position: absolute;
     top: 0;
@@ -87,15 +105,18 @@
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     transition: transform 0.3s ease, opacity 0.3s ease;
-    touch-action: none; /* enable pointer dragging */
+    touch-action: none;
   }
 </style>
 </head>
+
 <body>
 
-<audio id="bgMusic" loop></audio>
+<audio id="bgMusic"></audio>
 
 <div class="card" id="card">
+  <h1>POOOOOOKKKK YOU CAME BACK!!!</h1>
+  <p class="intro">I made some changes :)</p>
   <p class="intro">I love you to the furthest galaxy and back...</p>
   <p class="subtext">I have an important question for you mi pook…</p>
   <h1>💖 Will You Be My Valentine? 💖</h1>
@@ -106,92 +127,180 @@
 
 <script>
 window.onload = function() {
+
   const card = document.getElementById("card");
   const yesBtn = document.getElementById("yesBtn");
   const noBtn = document.getElementById("noBtn");
   const countdownEl = document.getElementById("countdown");
   const music = document.getElementById("bgMusic");
 
-  // SONG LIST
-  const songs = ["song1.mp3","song2.mp3","song3.mp3","song4.mp3","song5.mp3"];
+  const songs = [
+    "song1.mp3","song2.mp3","song3.mp3","song4.mp3",
+    "song5.mp3","song6.mp3","song7.mp3","song8.mp3",
+    "song9.mp3","song10.mp3","song11.mp3"
+  ];
 
-  function playRandomSong() {
-    const randomIndex = Math.floor(Math.random() * songs.length);
-    music.src = songs[randomIndex];
-    music.volume = 0;
-    music.play().catch(() => console.log("Autoplay blocked. Click 'Yes' to start music."));
-    // Slow fade-in (~10 seconds)
+  let currentSongIndex = 0;
+  let isPlaying = false;
+  let isFading = false;
+
+  /* ----------- FADE FUNCTIONS ----------- */
+
+  function fadeIn() {
     let vol = 0;
-    const fadeIn = setInterval(() => {
-      if(vol < 1){ vol += 0.002; music.volume = Math.min(vol,1); }
-      else clearInterval(fadeIn);
+    music.volume = 0;
+    const fade = setInterval(() => {
+      if (vol < 1) {
+        vol += 0.05;
+        music.volume = Math.min(vol, 1);
+      } else {
+        clearInterval(fade);
+      }
     }, 50);
   }
 
-  // YES button
+  function fadeOut(callback) {
+
+    if (!isPlaying) {
+      if (callback) callback();
+      return;
+    }
+
+    if (isFading) return;
+    isFading = true;
+
+    let vol = music.volume;
+
+    const fade = setInterval(() => {
+      if (vol > 0.02) {
+        vol -= 0.1;
+        music.volume = Math.max(vol, 0);
+      } else {
+        clearInterval(fade);
+        music.pause();
+        isFading = false;
+        if (callback) callback();
+      }
+    }, 50);
+  }
+
+  function playSong(index) {
+
+    if (index < 0) index = songs.length - 1;
+    if (index >= songs.length) index = 0;
+
+    fadeOut(() => {
+      currentSongIndex = index;
+      music.src = songs[currentSongIndex];
+
+      music.play().then(() => {
+        isPlaying = true;
+        fadeIn();
+      }).catch(() => console.log("Autoplay blocked."));
+    });
+  }
+
+  // Auto-play next song when one ends
+  music.addEventListener("ended", () => {
+    playSong(currentSongIndex + 1);
+  });
+
+  /* ----------- BUTTON LOGIC ----------- */
+
   yesBtn.onclick = function() {
-    playRandomSong(); // play a random song on user interaction
     card.innerHTML = `
       <h1>🥰 YAY!!! 🥰</h1>
-      <p>I knew it ❤️<br><br>Happy Valentine’s Day mi lil most precious most adorable most cutie patootie zanzuni patoonie princess 💐</p>
+      <p>I knew it ❤️<br><br>
+      Happy Valentine’s Day mi lil most precious most adorable most cutie patootie zanzuni patoonie princess 💐</p>
       <p>Please choose a date:</p>
       <button class="date-option" id="date1">Feb 13 at 6:30 PM</button>
       <button class="date-option" id="date2">Feb 14 at 2 PM</button>
     `;
+
     document.getElementById("date1").onclick = () => showPhotos('Feb 13 at 6:30 PM');
     document.getElementById("date2").onclick = () => showPhotos('Feb 14 at 2 PM');
   };
 
-// NO button behavior
-noBtn.onclick = () => {
-  noBtn.textContent = "That’s not nice POOK! 😠"; // change text immediately
-  noBtn.disabled = true; // optional: prevent double-tap
-  setTimeout(() => {
-    noBtn.textContent = "No 🙃"; // revert after 3 seconds
-    noBtn.disabled = false;
-  }, 3000); // 3000ms = 3 seconds
-};
+  noBtn.onclick = () => {
+    noBtn.textContent = "That’s not nice POOK! 😠";
+    noBtn.disabled = true;
+    setTimeout(() => {
+      noBtn.textContent = "No 🙃";
+      noBtn.disabled = false;
+    }, 3000);
+  };
 
+  /* ----------- COUNTDOWN ----------- */
 
-  // --- COUNTDOWN ---
   const valentineDate = new Date("February 14, 2026 00:00:00").getTime();
+
   setInterval(() => {
     const now = new Date().getTime();
     const distance = valentineDate - now;
-    if(distance < 0){ countdownEl.textContent = "💘 It’s Valentine’s Day!"; return; }
+
+    if(distance < 0){
+      countdownEl.textContent = "💘 It’s Valentine’s Day!";
+      return;
+    }
+
     const days = Math.floor(distance/(1000*60*60*24));
     const hours = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
     const minutes = Math.floor((distance%(1000*60*60))/(1000*60));
     const seconds = Math.floor((distance%(1000*60))/1000);
-    countdownEl.textContent = `⏳ ${days}d ${hours}h ${minutes}m ${seconds}s until Valentine’s Day`;
+
+    countdownEl.textContent =
+      `⏳ ${days}d ${hours}h ${minutes}m ${seconds}s until Valentine’s Day`;
   },1000);
 
-  // --- PHOTO STACK / SWIPE ---
-  const photos = ["photo1.JPEG","photo2.JPEG","photo3.JPEG","photo4.JPEG","photo5.JPEG","photo6.JPEG"];
+  /* ----------- PHOTO SYSTEM ----------- */
+
+  const photos = [
+    "photo1.JPEG","photo2.JPEG","photo3.JPEG","photo4.JPEG",
+    "photo5.JPEG","photo6.JPEG","photo7.JPEG","photo8.JPEG",
+    "photo9.JPEG","photo10.JPEG","photo11.JPEG","photo12.JPEG",
+    "photo13.JPEG","photo14.JPEG","photo15.JPEG","photo16.JPEG"
+  ];
+
   let currentIndex = 0;
   let startX=0, currentX=0, isDragging=false;
 
   function showPhotos(date){
+
     card.innerHTML = `
       <h1>🎉 See you then! 🎉</h1>
       <p>Can’t wait to see you on <strong>${date}</strong>! 💖</p>
+
       <div class="photo-stack" id="photoStack"></div>
       <p>Swipe left/right to see more photos!</p>
+
+      <div class="song-controls">
+        <button id="prevSong" class="date-option">⬅️ Previous</button>
+        <button id="nextSong" class="date-option">Next ➡️</button>
+      </div>
     `;
+
     currentIndex = 0;
     renderPhoto();
     enableSwipe();
+
+    document.getElementById("prevSong").onclick =
+      () => playSong(currentSongIndex - 1);
+
+    document.getElementById("nextSong").onclick =
+      () => playSong(currentSongIndex + 1);
+
+    playSong(currentSongIndex);
   }
 
   function renderPhoto(){
     const stack = document.getElementById("photoStack");
     stack.innerHTML = "";
+
     for(let i=currentIndex;i<photos.length;i++){
       const img=document.createElement("img");
       img.src=photos[i];
       img.style.zIndex=photos.length-i;
       img.style.opacity=(i===currentIndex)?1:0.8;
-      img.dataset.index=i;
       stack.appendChild(img);
     }
   }
@@ -204,20 +313,24 @@ noBtn.onclick = () => {
       isDragging=true;
       startX = e.touches ? e.touches[0].clientX : e.clientX;
     }
+
     function drag(e){
       if(!isDragging) return;
       currentX = e.touches ? e.touches[0].clientX : e.clientX;
       const deltaX=currentX-startX;
       if(topCard) topCard.style.transform = `translateX(${deltaX}px)`;
     }
+
     function endDrag(){
       if(!isDragging) return;
       isDragging=false;
       const deltaX=currentX-startX;
-      if(Math.abs(deltaX)>80){ // swipe threshold
+
+      if(Math.abs(deltaX)>80){
         topCard.style.transition="transform 0.3s ease, opacity 0.3s ease";
         topCard.style.transform=`translateX(${deltaX>0?500:-500}px)`;
         topCard.style.opacity=0;
+
         setTimeout(()=>{
           currentIndex++;
           if(currentIndex>=photos.length) currentIndex=0;
@@ -245,8 +358,3 @@ noBtn.onclick = () => {
 
 </body>
 </html>
-
-
-
-
-
